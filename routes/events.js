@@ -12,6 +12,18 @@ router.get('/', async (req, res) => {
   }
 })
 
+router.get('/autocomplete/:filter', async (req, res) => {
+  try{
+    const filter = req.params.filter;
+    const events = await Event.find({
+      event: { $regex: new RegExp(filter), $options: 'i'}})
+      .sort({timestamp: -1})
+    res.json(events)
+  } catch (err) {
+    res.status(500).json({ message: err.message })
+  }
+})
+
 // Creating one event
 router.post('/', async (req, res) => {
   console.log(req.body);
